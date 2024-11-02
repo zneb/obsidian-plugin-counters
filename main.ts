@@ -5,13 +5,13 @@ export default class MyPlugin extends Plugin {
 		this.registerDomEvent(
 			document,
 			"click",
-			this.onCheckboxClick.bind(this)
+			this.onCheckboxClick.bind(this),
+			{ capture: true }
 		);
 	}
 
 	async onCheckboxClick(event: MouseEvent) {
 		const target = event.target as HTMLElement;
-
 		// Check if the clicked element is a checkbox
 		if (
 			target.tagName !== "INPUT" ||
@@ -21,11 +21,13 @@ export default class MyPlugin extends Plugin {
 		}
 
 		const taskContent = target.parentElement?.textContent;
-
 		if (!taskContent) return;
 
 		const match = taskContent.match(/\((\d+)\/(\d+)\)\s*$/);
-		if (!match) return;
+		if (match == null) return;
+
+		event.preventDefault();
+		event.stopPropagation();
 
 		// Get the active markdown view and its content
 		const view = this.app.workspace.getActiveViewOfType(MarkdownView);
@@ -52,7 +54,6 @@ export default class MyPlugin extends Plugin {
 		for (let i = 0; i < lines.length; i++) {
 			const line = lines[i];
 			const match = line.match(/^- \[( |x)\] (.*)/);
-
 			if (match && match[2] === taskContent) {
 				const matchText = taskContent.match(/\((\d+)\/(\d+)\)\s*$/);
 				if (!matchText) throw Error("Failed to find task value");
