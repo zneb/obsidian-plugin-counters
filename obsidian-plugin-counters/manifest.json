@@ -1,0 +1,10 @@
+{
+	"id": "counters-plugin",
+	"name": "Counters Plugin",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Adds simple counters to a checkbox.",
+	"author": "Obsidian",
+	"authorUrl": "https://obsidian.md",
+	"isDesktopOnly": false
+}

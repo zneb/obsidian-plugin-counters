@@ -88,12 +88,18 @@ export default class MyPlugin extends Plugin {
 			const line = lines[i];
 			const match = line.match(/^- \[( |x|\/)\] (.*)/);
 			if (match && match[2] === taskContent) {
-				const matchText = taskContent.match(/\((\d+)\/(\d+)\)\s*$/);
+				const matchText = taskContent.match(/\((-?\d+)\/(-?\d+)\)\s*$/);
 				if (!matchText) throw Error("Failed to find task value");
 
 				const taskValue = parseInt(matchText[1], 10);
 				const taskTotal = parseInt(matchText[2], 10);
 
+				if (taskTotal === 0 && line.startsWith("- [ ]")) {
+					lines[i] = line
+						// Replace checkbox
+						.replace(/^- \[( |x|\/)\]/, `- [x]`);
+					break;
+				}
 				const nextValue = isDecrement ? taskValue - 1 : taskValue + 1;
 
 				let newCheckbox;
@@ -103,7 +109,7 @@ export default class MyPlugin extends Plugin {
 					newCheckbox = "[/]";
 				}
 
-				if (nextValue <= 0) {
+				if (nextValue <= 0 && taskTotal != 0) {
 					lines[i] = line
 						// Replace checkbox
 						.replace(/^- \[( |x|\/)\]/, `- [ ]`)
@@ -111,6 +117,7 @@ export default class MyPlugin extends Plugin {
 						.replace(/\((\d+)\/(\d+)\)\s*$/, `(0/$2)`);
 					break;
 				}
+
 				lines[i] = line
 					// Replace checkbox
 					.replace(/^- \[( |x|\/)\]/, `- ${newCheckbox}`)
