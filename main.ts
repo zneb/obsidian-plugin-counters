@@ -51,7 +51,7 @@ export default class MyPlugin extends Plugin {
 		const taskContent = target.parentElement?.textContent;
 		if (!taskContent) return;
 
-		const match = taskContent.match(/\((\d+)\/(\d+)\)\s*$/);
+		const match = taskContent.match(/\((-?\d+)\/(-?\d+)\)\s*$/);
 		if (match == null) return;
 
 		event.preventDefault();
@@ -114,7 +114,7 @@ export default class MyPlugin extends Plugin {
 						// Replace checkbox
 						.replace(/^- \[( |x|\/)\]/, `- [ ]`)
 						// Replace value
-						.replace(/\((\d+)\/(\d+)\)\s*$/, `(0/$2)`);
+						.replace(/\((-?\d+)\/(-?\d+)\)\s*$/, `(0/$2)`);
 					break;
 				}
 
@@ -122,7 +122,7 @@ export default class MyPlugin extends Plugin {
 					// Replace checkbox
 					.replace(/^- \[( |x|\/)\]/, `- ${newCheckbox}`)
 					// Replace value
-					.replace(/\((\d+)\/(\d+)\)\s*$/, `(${nextValue}/$2)`);
+					.replace(/\((-?\d+)\/(-?\d+)\)\s*$/, `(${nextValue}/$2)`);
 				break;
 			}
 		}
